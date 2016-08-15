@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+import com.example.dto.UserDto;
 import com.example.model.Message;
 import com.example.model.User;
 import com.example.service.EmailService;
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GreetingsControler {
 
 	@Autowired
-	private UserServiceBean greetingService;
+	private UserServiceBean userService;
 	
 	@Autowired
 	private MessageServiceBean messageService;
@@ -46,7 +47,7 @@ public class GreetingsControler {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<User>> getGreetings() {
 
-        Collection<User> greetings = greetingService.findAll();
+        Collection<User> greetings = userService.findAll();
 
         return new ResponseEntity<Collection<User>>(greetings,
                 HttpStatus.OK);
@@ -70,8 +71,8 @@ public class GreetingsControler {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> getGreeting(
-    		@PathVariable("id") Long id){
-    	User greeting = greetingService.findOne(id);
+    		@PathVariable("id") String id){
+    	User greeting = userService.findOne(id);
     	if (greeting == null) {
 			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 		}
@@ -83,10 +84,10 @@ public class GreetingsControler {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createGreeting(
-    		@RequestBody User greeting){
-    	User savedGreeting = greetingService.create(greeting);
-    	return new ResponseEntity<User>(savedGreeting, HttpStatus.CREATED);
+    public ResponseEntity<UserDto> createGreeting(
+    		@RequestBody UserDto greeting){
+    	UserDto savedGreeting = userService.create(greeting);
+    	return new ResponseEntity<UserDto>(savedGreeting, HttpStatus.CREATED);
     }
     
     @RequestMapping(
@@ -108,7 +109,7 @@ public class GreetingsControler {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> updateGreeting(
             @RequestBody User greeting) {
-        User updatedGreeting = greetingService.update(greeting);
+        User updatedGreeting = userService.update(greeting);
         if (updatedGreeting == null) {
             return new ResponseEntity<User>(
                     HttpStatus.INTERNAL_SERVER_ERROR);
@@ -122,9 +123,9 @@ public class GreetingsControler {
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> deleteGreeting(
-            @PathVariable("id") Long id) {
+            @PathVariable("id") String id) {
 
-        greetingService.delete(id);
+        userService.delete(id);
        
 
         return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
@@ -161,7 +162,7 @@ public class GreetingsControler {
 //        User greeting = null;
 //
 //        try {
-//            greeting = greetingService.findOne(id);
+//            greeting = userService.findOne(id);
 //            if (greeting == null) {
 //                logger.info("< sendGreeting id:{}", id);
 //                return new ResponseEntity<User>(HttpStatus.NOT_FOUND);

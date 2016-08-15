@@ -10,6 +10,11 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+
+import org.springframework.util.StringUtils;
+
+import com.example.dto.UserDto;
 
 @Entity
 //@Table(name = "user")
@@ -17,60 +22,44 @@ public class User {
 
 	@Id
 	@GeneratedValue
-	public Long id;
-	
+	public String mail;
 
-	public String handle;
-	
-	
-	
-
-	protected User() {
+	public User() {
 		super();
 	}
-
-	public User(String handle) {
-		super();
-		this.handle = handle;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	
-//	@OneToMany(targetEntity=Message.class, mappedBy = "user")
-//	public Set<Message> messages;
-
-//	public Long getIdUser() {
-//		return idUser;
-//	}
-//
-//	public void setIdUser(Long idUser) {
-//		this.idUser = idUser;
-//	}
-
-	public String getHandle() {
-		return handle;
+	public User(UserDto userDto){
+		this.mail = userDto.getMail();
 	}
 
-	public void setHandle(String handle) {
-		this.handle = handle;
+	public User(String mail) {
+		super();
+		this.mail = mail;
 	}
-//	
-//	
-//    public Set<Message> getMessages() {
-//        return messages;
-//    }
-//	
-//	public void setMessages(Set<Message> messages) {
-//		this.messages = messages;
-//	}
-//	
+
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+	
+	//create representation
+	public UserDto transferToDto() {
+		UserDto dto = new UserDto();
+		dto.setMail(getMail());
+		return dto;
+	}
+	
+	public void updateFromDto(UserDto dto) {
+		if (StringUtils.isEmpty(dto.getMail())) {
+			this.setMail(dto.getMail());
+		}
+
+}
+
 	
 	
 }

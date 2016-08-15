@@ -1,6 +1,7 @@
 package com.example.model;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -16,17 +17,24 @@ public class Message {
 	@GeneratedValue
 	public Long id;
 	
-	private String line_text;
+	private String text;
 	
-	@ManyToOne
-	@JoinColumn(name="user")
-	public User user;
+	@ManyToOne(cascade=CascadeType.ALL)
+	public User sender;
 	
-	protected Message(){}
+	@ManyToOne(cascade=CascadeType.ALL)
+	public User recever;
 
-	public Message(String line_text) {
+	public Message() {
 		super();
-		this.line_text = line_text;
+	}
+
+	public Message(Long id, String text, User sender, User recever) {
+		super();
+		this.id = id;
+		this.text = text;
+		this.sender = sender;
+		this.recever = recever;
 	}
 
 	public Long getId() {
@@ -37,31 +45,30 @@ public class Message {
 		this.id = id;
 	}
 
-	public String getLine_text() {
-		return line_text;
+	public String getText() {
+		return text;
 	}
 
-	public void setLine_text(String line_text) {
-		this.line_text = line_text;
+	public void setText(String text) {
+		this.text = text;
 	}
 
-//	public int getUser() {
-//		return user;
-//	}
-//
-//	public void setUser(int user) {
-//		this.user = user;
-//	}
-//	
-//	@ManyToOne
-//    @JoinColumn(name = "id")
-	public User getUser() {
-		return user;
+	public User getSender() {
+		return sender;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setSender(User sender) {
+		this.sender = sender;
 	}
+
+	public User getRecever() {
+		return recever;
+	}
+
+	public void setRecever(User recever) {
+		this.recever = recever;
+	}
+	
 	
 	
 	

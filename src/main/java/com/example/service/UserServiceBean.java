@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.dto.UserDto;
 import com.example.model.User;
 import com.example.model.User;
 import com.example.repository.GreetingRepository;
@@ -35,7 +36,7 @@ public class UserServiceBean {
 
     @Cacheable(value = "greetings",
     		   key = "#id")
-    public User findOne(Long id) {
+    public User findOne(String id) {
     	
         User greeting = userRepository.findOne(id);
 
@@ -49,19 +50,19 @@ public class UserServiceBean {
     		)
     @CachePut(value = "greetings",
  		   key = "#result.id")
-    public User create(User greeting) {
+    public UserDto create(UserDto greeting) {
 
-    	if (greeting.getId() != null) {
+    	if (greeting.getMail() != null) {
     		//fails
 			return null;
 		}
     	
-        User savedGreeting = userRepository.save(greeting);
+        User savedGreeting = userRepository.save(new User(greeting));
 	//	Triggering rollback
 //        if (savedGreeting.getId() == 4L) {
 //			throw new RuntimeException("Roll me back");
 //		}
-        return savedGreeting;
+        return savedGreeting.transferToDto();
     }
 
 
@@ -73,9 +74,9 @@ public class UserServiceBean {
 	   key = "#greetings.id")
     public User update(User greeting) {
 
-    	User greetingPersisted = findOne( greeting.getId());
+    	User greetingPersisted = findOne( greeting.getMail());
     	
-    	if (greetingPersisted.getId() == null) {
+    	if (greetingPersisted.getMail() == null) {
     		//fails
 			return null;
 		}
@@ -93,7 +94,7 @@ public class UserServiceBean {
     		)
     @CacheEvict(value = "greetings",
 	   key = "#id")
-    public void delete(Long id) {
+    public void delete(String id) {
 
         userRepository.delete(id);
 
